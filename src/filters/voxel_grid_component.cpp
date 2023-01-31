@@ -25,9 +25,6 @@ void VoxelGrid::timerCallback()
 
 void VoxelGrid::generatePointCloud()
 {
-  sensor_msgs::msg::PointCloud2::SharedPtr raw_data(new sensor_msgs::msg::PointCloud2);
-  sensor_msgs::msg::PointCloud2::SharedPtr filtered_data(new sensor_msgs::msg::PointCloud2);
-  
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
   
