@@ -14,7 +14,9 @@ find_package(pcl_conversions REQUIRED)
 find_package(PCL REQUIRED)
 
 set(pass_through_executable pass_through)
+set(voxel_grid_executable voxel_grid)
 set(pass_through_library ${pass_through_executable}_core)
+set(voxel_grid_library ${voxel_grid_executable}_core)
 set(dependencies
   rclcpp
   rclcpp_components
@@ -31,33 +33,55 @@ add_executable(${pass_through_executable}
   src/filters/pass_through_node.cpp
   src/filters/pass_through_component.cpp
 )
+add_executable(${voxel_grid_executable}
+  src/filters/voxel_grid_node.cpp
+  src/filters/voxel_grid_component.cpp
+)
 add_library(${pass_through_library} SHARED
   src/filters/pass_through_component.cpp
 )
+add_library(${voxel_grid_library} SHARED
+  src/filters/voxel_grid_component.cpp
+)
 ament_target_dependencies(${pass_through_executable}
+  ${dependencies}
+)
+ament_target_dependencies(${voxel_grid_executable}
   ${dependencies}
 )
 ament_target_dependencies(${pass_through_library}
   ${dependencies}
 )
+ament_target_dependencies(${voxel_grid_library}
+  ${dependencies}
+)
 rclcpp_components_register_nodes(${pass_through_library}
   "pcl_filters::PassThrough"
+)
+rclcpp_components_register_nodes(${voxel_grid_library}
+  "pcl_filters::VoxelGrid"
 )
 target_link_libraries(${pass_through_executable}
   ${PCL_LIBRARIES}
 )
+target_link_libraries(${voxel_grid_executable}
+  ${PCL_LIBRARIES}
+)
 target_link_libraries(${pass_through_library}
+  ${PCL_LIBRARIES}
+)
+target_link_libraries(${voxel_grid_library}
   ${PCL_LIBRARIES}
 )
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 install(TARGETS
-  ${pass_through_executable}
+  ${pass_through_executable} ${voxel_grid_executable}
   DESTINATION lib/${PROJECT_NAME}
 )
 install(TARGETS
-  ${pass_through_library}
+  ${pass_through_library} ${voxel_grid_library}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -82,6 +106,11 @@ if(BUILD_TESTING)
 endif()
 
 ament_export_include_directories(include)
-ament_export_libraries(${pass_through_executable} ${pass_through_library})
+ament_export_libraries(
+  ${pass_through_executable} 
+  ${voxel_grid_executable} 
+  ${pass_through_library}
+  ${voxel_grid_library}
+)
 ament_export_dependencies(${dependencies})
 ament_package()
